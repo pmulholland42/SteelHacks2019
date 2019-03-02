@@ -454,12 +454,14 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         if (!currentBarcode.equals(barcode.rawValue)){
             currentBarcode = barcode.rawValue;
             // Query DB for this barcode
-            if (true) // DB does contain barcode
+            // SELECT type_id FROM Items WHERE barcode = currentBarcode
+            if (true) // if the DB does contain that barcode
             {
                 // Got the item type
                 // Query DB for item type, location
                 String location = MainActivity.locationString;
-                if (currentBarcode.startsWith("078")) // DB contains that row
+                // SELECT * FROM LocationMap WHERE type_id = type_id AND municipality = location
+                if (currentBarcode.startsWith("078")) // if the DB contains that row
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
                     builder.append("This item can be recycled! ").append(" ");
@@ -497,10 +499,12 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
             builder.setTitle("Item type unknown. What is it?");
             builder.setItems(types, new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(DialogInterface dialog, int selection) {
                     // Send currentBarcode and item type to DB
+                    // INSERT INTO Items currentBarcode, (selection + 1)
 
                     // When the DB responds, set this to empty string to reset the scanner
+                    // Then it will see the barcode again and get the right answer
                     currentBarcode = "";
                 }
             });

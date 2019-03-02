@@ -33,6 +33,7 @@
                 android:text="1 - PETE"
                 android:padding="3dip" />
             <ImageView
+                android:id="@+id/type1"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
                 android:layout_height="40dp"
@@ -46,6 +47,7 @@
                 android:text="2 - HDPE"
                 android:padding="3dip" />
             <ImageView
+                android:id="@+id/type2"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
                 android:layout_height="40dp"
@@ -59,6 +61,7 @@
                 android:text="3 - PVC"
                 android:padding="3dip" />
             <ImageView
+                android:id="@+id/type3"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
                 android:layout_height="40dp"
@@ -72,6 +75,7 @@
                 android:text="4 - LDPE"
                 android:padding="3dip" />
             <ImageView
+                android:id="@+id/type4"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
                 android:layout_height="40dp"
@@ -85,6 +89,7 @@
                 android:text="5 - PP"
                 android:padding="3dip" />
             <ImageView
+                android:id="@+id/type5"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
                 android:layout_height="40dp"
@@ -98,6 +103,7 @@
                 android:text="6 - PS"
                 android:padding="3dip" />
             <ImageView
+                android:id="@+id/type6"
                 android:src="@drawable/x"
                 android:layout_width="20dp"
                 android:layout_height="40dp"
@@ -111,6 +117,7 @@
                 android:text="7 - Other"
                 android:padding="3dip" />
             <ImageView
+                android:id="@+id/type7"
                 android:src="@drawable/x"
                 android:layout_width="20dp"
                 android:layout_height="40dp"
