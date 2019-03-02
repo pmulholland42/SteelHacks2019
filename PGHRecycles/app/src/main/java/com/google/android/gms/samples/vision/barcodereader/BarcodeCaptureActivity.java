@@ -62,6 +62,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.samples.vision.barcodereader.awsDb.DynamoInteractions;
 import com.google.android.gms.samples.vision.barcodereader.awsDb.ItemsDo;
+import com.google.android.gms.samples.vision.barcodereader.awsDb.LocationMapDo;
 import com.google.android.gms.samples.vision.barcodereader.ui.camera.CameraSource;
 import com.google.android.gms.samples.vision.barcodereader.ui.camera.CameraSourcePreview;
 
@@ -512,21 +513,31 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                 // Query DB for item type, location
                 String location = MainActivity.locationString;
                 // SELECT * FROM LocationMap WHERE type_id = type_id AND municipality = location
-                String[] projection2 = {
-                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID
-                };
-                String selection2 = ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY + " = ? AND " + ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " = ?";
-                String[] selectionArgs2 = { location, Integer.toString(typeID) };
-                Cursor cursor2 = MainActivity.dbRead.query(
-                        ItemDatabaseContract.LocationMap.TABLE_NAME,   // The table to query
-                        projection2,             // The array of columns to return (pass null to get all)
-                        selection2,              // The columns for the WHERE clause
-                        selectionArgs2,          // The values for the WHERE clause
-                        null,                   // don't group the rows
-                        null,                   // don't filter by row groups
-                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " DESC"               // The sort order
-                );
-                if (cursor2.moveToNext()) // if the DB contains that row
+//                String[] projection2 = {
+//                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID
+//                };
+//                String selection2 = ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY + " = ? AND " + ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " = ?";
+//                String[] selectionArgs2 = { location, Integer.toString(typeID) };
+//                Cursor cursor2 = MainActivity.dbRead.query(
+//                        ItemDatabaseContract.LocationMap.TABLE_NAME,   // The table to query
+//                        projection2,             // The array of columns to return (pass null to get all)
+//                        selection2,              // The columns for the WHERE clause
+//                        selectionArgs2,          // The values for the WHERE clause
+//                        null,                   // don't group the rows
+//                        null,                   // don't filter by row groups
+//                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " DESC"               // The sort order
+//                );
+//
+                LocationMapDo maybeLocation = null;
+                try {
+                    maybeLocation = DynamoInteractions.getLocMap(location, dynamoDBMapper);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (maybeLocation != null) // if the DB contains that row
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
                     builder.append("This item can be recycled! (Resin #" + typeID + ") ");
@@ -567,10 +578,12 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                     // INSERT INTO Items currentBarcode, (selection + 1)
 
 
-                    ContentValues values = new ContentValues();
-                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_BARCODE, currentBarcode);
-                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID, (selection + 1));
-                    long newRowId = MainActivity.dbWrite.insert(ItemDatabaseContract.Items.TABLE_NAME, null, values);
+//                    ContentValues values = new ContentValues();
+//                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_BARCODE, currentBarcode);
+//                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID, (selection + 1));
+//                    long newRowId = MainActivity.dbWrite.insert(ItemDatabaseContract.Items.TABLE_NAME, null, values);
+
+                    DynamoInteractions.createItem(currentBarcode, selection+1, dynamoDBMapper);
 
 
                     // When the DB responds, set this to empty string to reset the scanner
@@ -578,6 +591,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                     currentBarcode = "";
                 }
             });
+
             builder.show();
         }
     }
