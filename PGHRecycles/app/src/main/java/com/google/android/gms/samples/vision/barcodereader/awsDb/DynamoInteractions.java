@@ -42,7 +42,7 @@ public final class DynamoInteractions {
         }).start();
     }
 
-    public ItemsDo getItem(final String barcode, final DynamoDBMapper dynamoDBMapper) throws ExecutionException, InterruptedException {
+    public static ItemsDo getItem(final String barcode, final DynamoDBMapper dynamoDBMapper) throws ExecutionException, InterruptedException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Callable<ItemsDo> callable = new Callable<ItemsDo>() {
             @Override
@@ -56,7 +56,7 @@ public final class DynamoInteractions {
         return itemsDoFuture.get();
     }
 
-    public LocationMapDo getLocMap(final String loc, final DynamoDBMapper dynamoDBMapper) throws ExecutionException, InterruptedException {
+    public static LocationMapDo getLocMap(final String loc, final DynamoDBMapper dynamoDBMapper) throws ExecutionException, InterruptedException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Callable<LocationMapDo> callable = new Callable<LocationMapDo>() {
             @Override

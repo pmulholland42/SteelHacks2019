@@ -52,9 +52,16 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.samples.vision.barcodereader.awsDb.DynamoInteractions;
+import com.google.android.gms.samples.vision.barcodereader.awsDb.ItemsDo;
 import com.google.android.gms.samples.vision.barcodereader.ui.camera.CameraSource;
 import com.google.android.gms.samples.vision.barcodereader.ui.camera.CameraSourcePreview;
 
@@ -66,6 +73,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Activity for the multi-tracker app.  This app detects barcodes and displays the value with the
@@ -97,7 +105,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     private String currentBarcode = "";
     private Context context;
 
-
+    DynamoDBMapper dynamoDBMapper;
 
 
     /**
@@ -132,6 +140,18 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         /*Snackbar.make(mGraphicOverlay, "Tap to capture. Pinch/Stretch to zoom",
                 Snackbar.LENGTH_LONG)
                 .show();*/
+        /////// AWS STUFF ///////////
+        AWSMobileClient.getInstance().initialize(this).execute();
+
+        AWSCredentialsProvider credentialsProvider = AWSMobileClient.getInstance().getCredentialsProvider();
+        AWSConfiguration configuration = AWSMobileClient.getInstance().getConfiguration();
+
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(credentialsProvider);
+
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(configuration)
+                .build();
     }
 
     /**
@@ -474,10 +494,20 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                     ItemDatabaseContract.Items.COLUMN_NAME_BARCODE + " DESC"               // The sort order
             );
 
-            if (cursor.moveToNext()) // if the DB does contain that barcode
+            ItemsDo maybeItem = null;
+
+            try {
+                maybeItem = DynamoInteractions.getItem(currentBarcode, dynamoDBMapper);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (maybeItem != null) // if the DB does contain that barcode
             {
                 // Got the item type
-                int typeID = cursor.getInt(cursor.getColumnIndexOrThrow(ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID));
+                int typeID = maybeItem.get_typeId();
 
                 // Query DB for item type, location
                 String location = MainActivity.locationString;

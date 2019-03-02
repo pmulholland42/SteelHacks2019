@@ -71,8 +71,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public static SQLiteDatabase dbWrite;
     public static SQLiteDatabase dbRead;
 
-    DynamoDBMapper dynamoDBMapper;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,19 +155,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             locationTextView.setText("Finding location...");
             Location lastLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             setLocationString(lastLocation, locationTextView);
-
-            /////// AWS STUFF ///////////
-            AWSMobileClient.getInstance().initialize(this).execute();
-
-            AWSCredentialsProvider credentialsProvider = AWSMobileClient.getInstance().getCredentialsProvider();
-            AWSConfiguration configuration = AWSMobileClient.getInstance().getConfiguration();
-
-            AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(credentialsProvider);
-
-            this.dynamoDBMapper = DynamoDBMapper.builder()
-                    .dynamoDBClient(dynamoDBClient)
-                    .awsConfiguration(configuration)
-                    .build();
         }
 
         public void setLocationString(Location location, TextView textView)
