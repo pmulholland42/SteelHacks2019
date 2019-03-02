@@ -496,17 +496,17 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                         null,                   // don't filter by row groups
                         ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " DESC"               // The sort order
                 );
-                if (cursor.moveToNext()) // if the DB contains that row
+                if (cursor2.moveToNext()) // if the DB contains that row
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    builder.append("This item can be recycled! ");
+                    builder.append("This item can be recycled! (Resin #" + typeID + ") ");
                     builder.setSpan(new ImageSpan(BarcodeCaptureActivity.this, R.drawable.check), builder.length() - 1, builder.length(), 0);
                     Snackbar.make(mGraphicOverlay, builder, Snackbar.LENGTH_INDEFINITE).show();
                 }
                 else
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    builder.append("This item cannot be recycled. ");
+                    builder.append("This item cannot be recycled. (Resin #" + typeID + ")" );
                     builder.setSpan(new ImageSpan(BarcodeCaptureActivity.this, R.drawable.x), builder.length() - 1, builder.length(), 0);
                     Snackbar.make(mGraphicOverlay, builder, Snackbar.LENGTH_INDEFINITE).show();
                 }
