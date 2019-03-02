@@ -28,7 +28,7 @@
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Plastic 1 - PETE"
                 android:padding="3dip" />
@@ -36,13 +36,13 @@
                 android:id="@+id/type1"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Plastic 2 - HDPE"
                 android:padding="3dip" />
@@ -50,13 +50,13 @@
                 android:id="@+id/type2"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Plastic 3 - PVC"
                 android:padding="3dip" />
@@ -64,13 +64,13 @@
                 android:id="@+id/type3"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Plastic 4 - LDPE"
                 android:padding="3dip" />
@@ -78,13 +78,13 @@
                 android:id="@+id/type4"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Plastic 5 - PP"
                 android:padding="3dip" />
@@ -92,13 +92,13 @@
                 android:id="@+id/type5"
                 android:src="@drawable/check"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Plastic 6 - PS"
                 android:padding="3dip" />
@@ -106,13 +106,13 @@
                 android:id="@+id/type6"
                 android:src="@drawable/x"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Plastic 7 - Other"
                 android:padding="3dip" />
@@ -120,13 +120,13 @@
                 android:id="@+id/type7"
                 android:src="@drawable/x"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Glass - green"
                 android:padding="3dip" />
@@ -134,13 +134,13 @@
                 android:id="@+id/type8"
                 android:src="@drawable/x"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Glass - brown"
                 android:padding="3dip" />
@@ -148,13 +148,13 @@
                 android:id="@+id/type9"
                 android:src="@drawable/x"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Glass - clear"
                 android:padding="3dip" />
@@ -162,13 +162,13 @@
                 android:id="@+id/type10"
                 android:src="@drawable/x"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="15dp">
             <TextView
                 android:text="Aluminum"
                 android:padding="3dip" />
@@ -176,7 +176,7 @@
                 android:id="@+id/type11"
                 android:src="@drawable/x"
                 android:layout_width="20dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>

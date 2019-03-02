@@ -14,7 +14,7 @@ public class ViewInfo extends AppCompatActivity {
 
         String location = MainActivity.locationString;
 
-        for (int i = 1; i <= 7; i++)
+        for (int i = 1; i <= 11; i++)
         {
             ImageView currView = (ImageView) findViewById(getResources().getIdentifier("type" + i, "id", getPackageName()));
             // Query DB for this plastic type
