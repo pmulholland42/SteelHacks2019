@@ -16,9 +16,19 @@
 
 package com.google.android.gms.samples.vision.barcodereader;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -26,6 +36,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Main activity demonstrating how to pass extra parameters to an activity that
@@ -38,6 +52,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private CompoundButton useFlash;
     private TextView statusMessage;
     private TextView barcodeValue;
+
+    public static String locationString = "Unknown";
 
     private static final int RC_BARCODE_CAPTURE = 9001;
     private static final String TAG = "BarcodeMain";
@@ -54,7 +70,71 @@ public class MainActivity extends Activity implements View.OnClickListener {
         useFlash = (CompoundButton) findViewById(R.id.use_flash);
 
         findViewById(R.id.read_barcode).setOnClickListener(this);
-    }
+
+        findViewById(R.id.view_info).setOnClickListener(this);
+        final TextView locationTextView = (TextView) findViewById(R.id.current_location);
+
+
+        // Location tracking
+        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        locationTextView.setText("Finding location..");
+            final LocationListener mLocationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(final Location location)
+                {
+                    //your code here
+                    System.out.println("Location, location, location");
+                    locationTextView.setText("Finding location....");
+
+                    //List<String>  providerList = locationManager.getAllProviders();
+                    if(location != null)
+                    {
+                        setLocationString(location, locationTextView);
+                    }
+                }
+
+                public void onStatusChanged(String s, int i, Bundle B)
+                {
+                    // Leave this blank (probably)
+                }
+                public void onProviderEnabled(String s)
+                {
+                    // Leave blank???
+                }
+                public void onProviderDisabled(String s)
+                {
+                    // Leave blank???
+                }
+            };
+
+            // Location updates every 60 seconds or 20 meters (1 emerald splash)
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 20, mLocationListener);
+        locationTextView.setText("Finding location...");
+        Location lastLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        setLocationString(lastLocation, locationTextView);
+        }
+
+        public void setLocationString(Location location, TextView textView)
+        {
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            try {
+                List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
+                if(null!=listAddresses&&listAddresses.size()>0){
+                    locationString = listAddresses.get(0).getAddressLine(0).split(",")[1];
+                    textView.setText("Current location: " + locationString);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
 
     /**
      * Called when a view has been clicked.
@@ -70,6 +150,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             intent.putExtra(BarcodeCaptureActivity.UseFlash, useFlash.isChecked());
 
             startActivityForResult(intent, RC_BARCODE_CAPTURE);
+        }
+        else
+        {
+            startActivity(new Intent(MainActivity.this, ViewInfo.class));
         }
 
     }

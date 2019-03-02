@@ -26,12 +26,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
@@ -54,6 +60,8 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Activity for the multi-tracker app.  This app detects barcodes and displays the value with the
@@ -85,6 +93,9 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     private String currentBarcode = "";
     private Context context;
 
+
+
+
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -93,6 +104,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         super.onCreate(icicle);
         context = this;
         setContentView(R.layout.barcode_capture);
+
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay<BarcodeGraphic>) findViewById(R.id.graphicOverlay);
@@ -442,10 +454,11 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         if (!currentBarcode.equals(barcode.rawValue)){
             currentBarcode = barcode.rawValue;
             // Query DB for this barcode
-            if (false) // DB does contain barcode
+            if (true) // DB does contain barcode
             {
                 // Got the item type
                 // Query DB for item type, location
+                String location = MainActivity.locationString;
                 if (currentBarcode.startsWith("078")) // DB contains that row
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -494,4 +507,6 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
             builder.show();
         }
     }
+
+
 }
