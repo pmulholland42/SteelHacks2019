@@ -105,6 +105,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
         values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID, 5);
         values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY, "Pittsburgh");
         newRowId = dbWrite.insert(ItemDatabaseContract.LocationMap.TABLE_NAME, null, values);
+        values = new ContentValues();
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID, 8);
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY, "Pittsburgh");
+        newRowId = dbWrite.insert(ItemDatabaseContract.LocationMap.TABLE_NAME, null, values);
+        values = new ContentValues();
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID, 9);
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY, "Pittsburgh");
+        newRowId = dbWrite.insert(ItemDatabaseContract.LocationMap.TABLE_NAME, null, values);
+        values = new ContentValues();
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID, 10);
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY, "Pittsburgh");
+        newRowId = dbWrite.insert(ItemDatabaseContract.LocationMap.TABLE_NAME, null, values);
+        values = new ContentValues();
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID, 11);
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY, "Pittsburgh");
+        newRowId = dbWrite.insert(ItemDatabaseContract.LocationMap.TABLE_NAME, null, values);
         dbRead = dbHelper.getReadableDatabase();
 
 

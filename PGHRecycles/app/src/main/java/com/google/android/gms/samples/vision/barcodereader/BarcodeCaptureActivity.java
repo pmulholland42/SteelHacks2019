@@ -499,14 +499,19 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                 if (cursor2.moveToNext()) // if the DB contains that row
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    builder.append("This item can be recycled! (Resin #" + typeID + ") ");
+
+                    builder.append("This item can be recycled!");
+                    if (typeID <= 7)
+                        builder.append(" (Resin #" + typeID + ") ");
                     builder.setSpan(new ImageSpan(BarcodeCaptureActivity.this, R.drawable.check), builder.length() - 1, builder.length(), 0);
                     Snackbar.make(mGraphicOverlay, builder, Snackbar.LENGTH_INDEFINITE).show();
                 }
                 else
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    builder.append("This item cannot be recycled. (Resin #" + typeID + ")" );
+                    builder.append("This item cannot be recycled.");
+                    if (typeID <= 7)
+                        builder.append(" (Resin #" + typeID + ") ");
                     builder.setSpan(new ImageSpan(BarcodeCaptureActivity.this, R.drawable.x), builder.length() - 1, builder.length(), 0);
                     Snackbar.make(mGraphicOverlay, builder, Snackbar.LENGTH_INDEFINITE).show();
                 }
@@ -526,7 +531,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         @Override
         public void run()
         {
-            String[] types = {"1 - PETE", "2 - HDPE", "3 - PVC", "4 - LDPE", "5 - PP", "6 - PS", "7 - Other"};
+            String[] types = {"Plastic 1 - PETE", "Plastic 2 - HDPE", "Plastic 3 - PVC", "Plastic 4 - LDPE", " Plastic 5 - PP",
+                    "Plastic 6 - PS", "Plastic 7 - Other", "Glass - green", "Glass - brown", "Glass - clear", "Aluminum"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Item type unknown. What is it?");
