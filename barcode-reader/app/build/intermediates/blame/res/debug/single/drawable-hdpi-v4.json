@@ -12,12 +12,12 @@
         "source": "C:\\Users\\Peter\\Desktop\\SteelHacks2019\\barcode-reader\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.0\\res\\drawable-hdpi-v4\\abc_list_focused_holo.9.png"
     },
     {
-        "merged": "C:\\Users\\Peter\\Desktop\\SteelHacks2019\\barcode-reader\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\common_plus_signin_btn_icon_light_disabled.9.png",
-        "source": "C:\\Users\\Peter\\Desktop\\SteelHacks2019\\barcode-reader\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\9.4.0\\res\\drawable-hdpi-v4\\common_plus_signin_btn_icon_light_disabled.9.png"
-    },
-    {
         "merged": "C:\\Users\\Peter\\Desktop\\SteelHacks2019\\barcode-reader\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\common_plus_signin_btn_icon_dark_pressed.9.png",
         "source": "C:\\Users\\Peter\\Desktop\\SteelHacks2019\\barcode-reader\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\9.4.0\\res\\drawable-hdpi-v4\\common_plus_signin_btn_icon_dark_pressed.9.png"
+    },
+    {
+        "merged": "C:\\Users\\Peter\\Desktop\\SteelHacks2019\\barcode-reader\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\common_plus_signin_btn_icon_light_disabled.9.png",
+        "source": "C:\\Users\\Peter\\Desktop\\SteelHacks2019\\barcode-reader\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\9.4.0\\res\\drawable-hdpi-v4\\common_plus_signin_btn_icon_light_disabled.9.png"
     },
     {
         "merged": "C:\\Users\\Peter\\Desktop\\SteelHacks2019\\barcode-reader\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\abc_scrubber_control_to_pressed_mtrl_005.png",

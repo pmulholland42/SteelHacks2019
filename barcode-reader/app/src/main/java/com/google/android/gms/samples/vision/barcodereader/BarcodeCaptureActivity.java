@@ -79,6 +79,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
 
+    private String currentBarcode = "";
+
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -106,9 +108,9 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         gestureDetector = new GestureDetector(this, new CaptureGestureListener());
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
-        Snackbar.make(mGraphicOverlay, "Tap to capture. Pinch/Stretch to zoom",
+        /*Snackbar.make(mGraphicOverlay, "Tap to capture. Pinch/Stretch to zoom",
                 Snackbar.LENGTH_LONG)
-                .show();
+                .show();*/
     }
 
     /**
@@ -432,5 +434,12 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     @Override
     public void onBarcodeDetected(Barcode barcode) {
         //do something with barcode data returned
+        if (!currentBarcode.equals(barcode.rawValue)){
+            currentBarcode = barcode.rawValue;
+            // Talk to the database
+        }
+        Snackbar.make(mGraphicOverlay, currentBarcode,
+                Snackbar.LENGTH_LONG)
+                .show();
     }
 }

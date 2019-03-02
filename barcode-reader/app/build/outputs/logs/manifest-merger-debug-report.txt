@@ -183,9 +183,9 @@ ADDED from C:\Users\Peter\Desktop\SteelHacks2019\barcode-reader\app\src\main\And
 	android:name
 		ADDED from C:\Users\Peter\Desktop\SteelHacks2019\barcode-reader\app\src\main\AndroidManifest.xml:31:27-74
 activity#com.google.android.gms.samples.vision.barcodereader.BarcodeCaptureActivity
-ADDED from C:\Users\Peter\Desktop\SteelHacks2019\barcode-reader\app\src\main\AndroidManifest.xml:35:9-36:43
+ADDED from C:\Users\Peter\Desktop\SteelHacks2019\barcode-reader\app\src\main\AndroidManifest.xml:35:9-36:42
 	android:label
-		ADDED from C:\Users\Peter\Desktop\SteelHacks2019\barcode-reader\app\src\main\AndroidManifest.xml:36:13-41
+		ADDED from C:\Users\Peter\Desktop\SteelHacks2019\barcode-reader\app\src\main\AndroidManifest.xml:36:13-40
 	android:name
 		ADDED from C:\Users\Peter\Desktop\SteelHacks2019\barcode-reader\app\src\main\AndroidManifest.xml:35:19-57
 uses-sdk
