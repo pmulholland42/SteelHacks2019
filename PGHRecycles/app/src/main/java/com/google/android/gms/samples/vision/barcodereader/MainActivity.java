@@ -39,6 +39,12 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -64,6 +70,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public static ItemDBHelper dbHelper;
     public static SQLiteDatabase dbWrite;
     public static SQLiteDatabase dbRead;
+
+    DynamoDBMapper dynamoDBMapper;
 
 
     @Override
@@ -146,9 +154,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             // Location updates every 60 seconds or 20 meters (1 emerald splash)
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 20, mLocationListener);
-        locationTextView.setText("Finding location...");
-        Location lastLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        setLocationString(lastLocation, locationTextView);
+            locationTextView.setText("Finding location...");
+            Location lastLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            setLocationString(lastLocation, locationTextView);
+
+            /////// AWS STUFF ///////////
+            AWSMobileClient.getInstance().initialize(this).execute();
+
+            AWSCredentialsProvider credentialsProvider = AWSMobileClient.getInstance().getCredentialsProvider();
+            AWSConfiguration configuration = AWSMobileClient.getInstance().getConfiguration();
+
+            AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(credentialsProvider);
+
+            this.dynamoDBMapper = DynamoDBMapper.builder()
+                    .dynamoDBClient(dynamoDBClient)
+                    .awsConfiguration(configuration)
+                    .build();
         }
 
         public void setLocationString(Location location, TextView textView)

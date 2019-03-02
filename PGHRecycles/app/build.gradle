@@ -26,4 +26,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-vision:9.4.0+'
     compile 'com.android.support:design:24.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.7.+'
+    compile ('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true; }
 }
