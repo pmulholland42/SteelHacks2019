@@ -28,10 +28,13 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -80,6 +83,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     private GestureDetector gestureDetector;
 
     private String currentBarcode = "";
+    private Context context;
 
     /**
      * Initializes the UI and creates the detector pipeline.
@@ -87,6 +91,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        context = this;
         setContentView(R.layout.barcode_capture);
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
@@ -436,10 +441,57 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         //do something with barcode data returned
         if (!currentBarcode.equals(barcode.rawValue)){
             currentBarcode = barcode.rawValue;
-            // Talk to the database
+            // Query DB for this barcode
+            if (false) // DB does contain barcode
+            {
+                // Got the item type
+                // Query DB for item type, location
+                if (currentBarcode.startsWith("078")) // DB contains that row
+                {
+                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                    builder.append("This item can be recycled! ").append(" ");
+                    builder.setSpan(new ImageSpan(BarcodeCaptureActivity.this, R.drawable.check), builder.length() - 1, builder.length(), 0);
+                    //builder.append("");
+                    Snackbar.make(mGraphicOverlay, builder, Snackbar.LENGTH_INDEFINITE).show();
+                }
+                else
+                {
+                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                    builder.append("This item cannot be recycled. ").append(currentBarcode);
+                    builder.setSpan(new ImageSpan(BarcodeCaptureActivity.this, R.drawable.x), builder.length() - 1, builder.length(), 0);
+                    //builder.append("");
+                    Snackbar.make(mGraphicOverlay, builder, Snackbar.LENGTH_INDEFINITE).show();
+                }
+            }
+            else // DB does not contain barcode
+            {
+                runOnUiThread(new ItemTypeAlertRunnable());
+            }
         }
-        Snackbar.make(mGraphicOverlay, currentBarcode,
-                Snackbar.LENGTH_LONG)
-                .show();
+        /*Snackbar.make(mGraphicOverlay, currentBarcode,
+                Snackbar.LENGTH_INDEFINITE)
+                .show();*/
+    }
+
+    public class ItemTypeAlertRunnable implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            String[] types = {"1 - PETE", "2 - HDPE", "3 - PVC", "4 - LDPE", "5 - PP", "6 - PS", "7 - Other"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Item type unknown. What is it?");
+            builder.setItems(types, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Send currentBarcode and item type to DB
+
+                    // When the DB responds, set this to empty string to reset the scanner
+                    currentBarcode = "";
+                }
+            });
+            builder.show();
+        }
     }
 }
