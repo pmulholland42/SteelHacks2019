@@ -455,7 +455,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     @Override
     public void onBarcodeDetected(Barcode barcode) {
         //do something with barcode data returned
-        if (!currentBarcode.equals(barcode.rawValue)){
+        if (!currentBarcode.equals(barcode.rawValue)) {
             currentBarcode = barcode.rawValue;
             // Query DB for this barcode
             // SELECT type_id FROM Items WHERE barcode = currentBarcode
@@ -551,6 +551,12 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
 
                     // When the DB responds, set this to empty string to reset the scanner
                     // Then it will see the barcode again and get the right answer
+                    try {
+                        Thread.sleep(100);
+                    }
+                    catch (Exception e) {
+
+                    }
                     currentBarcode = "";
                 }
             });
