@@ -1,4 +1,4 @@
-# EAT ASS
+# PGH Recycles
 
 ## Docker Stuff
 To get the container and run it
