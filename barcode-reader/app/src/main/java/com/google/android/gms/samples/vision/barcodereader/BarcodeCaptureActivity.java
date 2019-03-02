@@ -20,11 +20,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Camera;
 import android.location.Address;
 import android.location.Geocoder;
@@ -34,6 +37,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -455,26 +459,55 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
             currentBarcode = barcode.rawValue;
             // Query DB for this barcode
             // SELECT type_id FROM Items WHERE barcode = currentBarcode
-            if (true) // if the DB does contain that barcode
+            String[] projection1 = {
+                    ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID,
+            };
+            String selection = ItemDatabaseContract.Items.COLUMN_NAME_BARCODE + " = ?";
+            String[] selectionArgs = { currentBarcode };
+            Cursor cursor = MainActivity.dbRead.query(
+                    ItemDatabaseContract.Items.TABLE_NAME,   // The table to query
+                    projection1,             // The array of columns to return (pass null to get all)
+                    selection,              // The columns for the WHERE clause
+                    selectionArgs,          // The values for the WHERE clause
+                    null,                   // don't group the rows
+                    null,                   // don't filter by row groups
+                    ItemDatabaseContract.Items.COLUMN_NAME_BARCODE + " DESC"               // The sort order
+            );
+
+            if (cursor.moveToNext()) // if the DB does contain that barcode
             {
                 // Got the item type
+                int typeID = cursor.getInt(cursor.getColumnIndexOrThrow(ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID));
+
                 // Query DB for item type, location
                 String location = MainActivity.locationString;
                 // SELECT * FROM LocationMap WHERE type_id = type_id AND municipality = location
-                if (currentBarcode.startsWith("078")) // if the DB contains that row
+                String[] projection2 = {
+                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID
+                };
+                String selection2 = ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY + " = ? AND " + ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " = ?";
+                String[] selectionArgs2 = { location, Integer.toString(typeID) };
+                Cursor cursor2 = MainActivity.dbRead.query(
+                        ItemDatabaseContract.LocationMap.TABLE_NAME,   // The table to query
+                        projection2,             // The array of columns to return (pass null to get all)
+                        selection2,              // The columns for the WHERE clause
+                        selectionArgs2,          // The values for the WHERE clause
+                        null,                   // don't group the rows
+                        null,                   // don't filter by row groups
+                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " DESC"               // The sort order
+                );
+                if (cursor.moveToNext()) // if the DB contains that row
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    builder.append("This item can be recycled! ").append(" ");
+                    builder.append("This item can be recycled! ");
                     builder.setSpan(new ImageSpan(BarcodeCaptureActivity.this, R.drawable.check), builder.length() - 1, builder.length(), 0);
-                    //builder.append("");
                     Snackbar.make(mGraphicOverlay, builder, Snackbar.LENGTH_INDEFINITE).show();
                 }
                 else
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    builder.append("This item cannot be recycled. ").append(currentBarcode);
+                    builder.append("This item cannot be recycled. ");
                     builder.setSpan(new ImageSpan(BarcodeCaptureActivity.this, R.drawable.x), builder.length() - 1, builder.length(), 0);
-                    //builder.append("");
                     Snackbar.make(mGraphicOverlay, builder, Snackbar.LENGTH_INDEFINITE).show();
                 }
             }
@@ -502,6 +535,13 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                 public void onClick(DialogInterface dialog, int selection) {
                     // Send currentBarcode and item type to DB
                     // INSERT INTO Items currentBarcode, (selection + 1)
+
+
+                    ContentValues values = new ContentValues();
+                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_BARCODE, currentBarcode);
+                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID, (selection + 1));
+                    long newRowId = MainActivity.dbWrite.insert(ItemDatabaseContract.Items.TABLE_NAME, null, values);
+
 
                     // When the DB responds, set this to empty string to reset the scanner
                     // Then it will see the barcode again and get the right answer

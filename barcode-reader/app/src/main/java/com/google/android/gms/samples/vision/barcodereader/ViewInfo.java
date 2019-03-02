@@ -1,5 +1,6 @@
 package com.google.android.gms.samples.vision.barcodereader;
 
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -19,7 +20,9 @@ public class ViewInfo extends AppCompatActivity {
             // Query DB for this plastic type
             // SELECT * FROM LocationMap WHERE type_id = i AND municipality = location
 
-            if (true) // If we get a result
+            Cursor c = MainActivity.dbRead.rawQuery("SELECT * FROM LocationMap WHERE type_id = ? AND municipality = ?", new String[] {Integer.toString(i), location} );
+
+            if (c.moveToNext()) // If we get a result
             {
                 currView.setImageResource(R.drawable.check);
             }

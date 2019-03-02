@@ -17,8 +17,11 @@
 package com.google.android.gms.samples.vision.barcodereader;
 
 import android.Manifest;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -26,6 +29,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
+import android.provider.BaseColumns;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -34,12 +38,12 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.vision.barcode.Barcode;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Main activity demonstrating how to pass extra parameters to an activity that
@@ -57,6 +61,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final int RC_BARCODE_CAPTURE = 9001;
     private static final String TAG = "BarcodeMain";
+    public static ItemDBHelper dbHelper;
+    public static SQLiteDatabase dbWrite;
+    public static SQLiteDatabase dbRead;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +81,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         findViewById(R.id.view_info).setOnClickListener(this);
         final TextView locationTextView = (TextView) findViewById(R.id.current_location);
+
+        dbHelper = new ItemDBHelper(this);
+        System.out.println("Made dbhelper");
+        dbWrite = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID, 1);
+        values.put(ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY, "Pittsburgh");
+        long newRowId = dbWrite.insert(ItemDatabaseContract.LocationMap.TABLE_NAME, null, values);
+        dbRead = dbHelper.getReadableDatabase();
+
 
 
         // Location tracking
@@ -125,7 +143,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             try {
                 List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
                 if(null!=listAddresses&&listAddresses.size()>0){
-                    locationString = listAddresses.get(0).getAddressLine(0).split(",")[1];
+                    locationString = listAddresses.get(0).getAddressLine(0).split(",")[1].replaceAll("\\s+","");;
                     textView.setText("Current location: " + locationString);
                 }
             } catch (IOException e) {
