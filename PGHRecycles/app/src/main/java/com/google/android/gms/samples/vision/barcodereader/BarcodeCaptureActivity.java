@@ -52,9 +52,17 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.samples.vision.barcodereader.awsDb.DynamoInteractions;
+import com.google.android.gms.samples.vision.barcodereader.awsDb.ItemsDo;
+import com.google.android.gms.samples.vision.barcodereader.awsDb.LocationMapDo;
 import com.google.android.gms.samples.vision.barcodereader.ui.camera.CameraSource;
 import com.google.android.gms.samples.vision.barcodereader.ui.camera.CameraSourcePreview;
 
@@ -66,6 +74,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Activity for the multi-tracker app.  This app detects barcodes and displays the value with the
@@ -97,7 +106,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     private String currentBarcode = "";
     private Context context;
 
-
+    DynamoDBMapper dynamoDBMapper;
 
 
     /**
@@ -132,6 +141,18 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         /*Snackbar.make(mGraphicOverlay, "Tap to capture. Pinch/Stretch to zoom",
                 Snackbar.LENGTH_LONG)
                 .show();*/
+        /////// AWS STUFF ///////////
+        AWSMobileClient.getInstance().initialize(this).execute();
+
+        AWSCredentialsProvider credentialsProvider = AWSMobileClient.getInstance().getCredentialsProvider();
+        AWSConfiguration configuration = AWSMobileClient.getInstance().getConfiguration();
+
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(credentialsProvider);
+
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(configuration)
+                .build();
     }
 
     /**
@@ -474,29 +495,49 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                     ItemDatabaseContract.Items.COLUMN_NAME_BARCODE + " DESC"               // The sort order
             );
 
-            if (cursor.moveToNext()) // if the DB does contain that barcode
+            ItemsDo maybeItem = null;
+
+            try {
+                maybeItem = DynamoInteractions.getItem(currentBarcode, dynamoDBMapper);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (maybeItem != null) // if the DB does contain that barcode
             {
                 // Got the item type
-                int typeID = cursor.getInt(cursor.getColumnIndexOrThrow(ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID));
+                int typeID = maybeItem.get_typeId();
 
                 // Query DB for item type, location
                 String location = MainActivity.locationString;
                 // SELECT * FROM LocationMap WHERE type_id = type_id AND municipality = location
-                String[] projection2 = {
-                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID
-                };
-                String selection2 = ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY + " = ? AND " + ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " = ?";
-                String[] selectionArgs2 = { location, Integer.toString(typeID) };
-                Cursor cursor2 = MainActivity.dbRead.query(
-                        ItemDatabaseContract.LocationMap.TABLE_NAME,   // The table to query
-                        projection2,             // The array of columns to return (pass null to get all)
-                        selection2,              // The columns for the WHERE clause
-                        selectionArgs2,          // The values for the WHERE clause
-                        null,                   // don't group the rows
-                        null,                   // don't filter by row groups
-                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " DESC"               // The sort order
-                );
-                if (cursor2.moveToNext()) // if the DB contains that row
+//                String[] projection2 = {
+//                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID
+//                };
+//                String selection2 = ItemDatabaseContract.LocationMap.COLUMN_NAME_MUNICIPALITY + " = ? AND " + ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " = ?";
+//                String[] selectionArgs2 = { location, Integer.toString(typeID) };
+//                Cursor cursor2 = MainActivity.dbRead.query(
+//                        ItemDatabaseContract.LocationMap.TABLE_NAME,   // The table to query
+//                        projection2,             // The array of columns to return (pass null to get all)
+//                        selection2,              // The columns for the WHERE clause
+//                        selectionArgs2,          // The values for the WHERE clause
+//                        null,                   // don't group the rows
+//                        null,                   // don't filter by row groups
+//                        ItemDatabaseContract.LocationMap.COLUMN_NAME_TYPE_ID + " DESC"               // The sort order
+//                );
+//
+                LocationMapDo maybeLocation = null;
+                try {
+                    maybeLocation = DynamoInteractions.getLocMap(location, dynamoDBMapper);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (maybeLocation != null) // if the DB contains that row
                 {
                     SpannableStringBuilder builder = new SpannableStringBuilder();
 
@@ -543,10 +584,12 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                     // INSERT INTO Items currentBarcode, (selection + 1)
 
 
-                    ContentValues values = new ContentValues();
-                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_BARCODE, currentBarcode);
-                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID, (selection + 1));
-                    long newRowId = MainActivity.dbWrite.insert(ItemDatabaseContract.Items.TABLE_NAME, null, values);
+//                    ContentValues values = new ContentValues();
+//                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_BARCODE, currentBarcode);
+//                    values.put(ItemDatabaseContract.Items.COLUMN_NAME_TYPE_ID, (selection + 1));
+//                    long newRowId = MainActivity.dbWrite.insert(ItemDatabaseContract.Items.TABLE_NAME, null, values);
+
+                    DynamoInteractions.createItem(currentBarcode, selection+1, dynamoDBMapper);
 
 
                     // When the DB responds, set this to empty string to reset the scanner
@@ -560,6 +603,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                     currentBarcode = "";
                 }
             });
+
             builder.show();
         }
     }
